@@ -99,12 +99,15 @@ pnpm dev:server
 
 # Terminal 2: Start Electron in remote mode
 pnpm --filter @verdent-mini/electron dev:remote
+
+# or just
+pnpm dev:remote
 ```
 
 **Web Mode** (Browser-based):
 ```bash
 pnpm dev:web
-# Open http://localhost:3001 in browser
+# Open http://localhost:3000 in browser
 ```
 
 ### Running Tests
