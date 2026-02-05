@@ -26,7 +26,7 @@ export function setupRemoteMode(
         // Send any pending messages
         while (pendingMessages.length > 0) {
           const msg = pendingMessages.shift();
-          if (msg) ws.send(msg);
+          if (msg && ws) ws.send(msg);
         }
 
         resolve();
@@ -35,13 +35,38 @@ export function setupRemoteMode(
       ws.on('message', (data) => {
         const message = data.toString();
         
-        // Forward response to all renderer processes
-        // In a real app, you'd track which renderer sent each request
-        ipcSenders.forEach((sender) => {
-          if (!sender.isDestroyed()) {
-            sender.send('rpc-response', message);
+        // Parse message to get request ID for targeted response
+        try {
+          const response = JSON.parse(message);
+          
+          // Handle notifications (no id field) - these should go to all renderers
+          if (!response.id) {
+            // Broadcast to all renderers
+            ipcSenders.forEach((sender) => {
+              if (!sender.isDestroyed()) {
+                sender.send('rpc-response', message);
+              }
+            });
+            return;
           }
-        });
+          
+          // Handle responses - send only to the specific requester
+          const requestId = String(response.id);
+          const sender = ipcSenders.get(requestId);
+          
+          if (sender && !sender.isDestroyed()) {
+            sender.send('rpc-response', message);
+            // Clean up the sender entry after response is sent
+            ipcSenders.delete(requestId);
+          }
+        } catch {
+          // If parsing fails, broadcast to all (fallback)
+          ipcSenders.forEach((sender) => {
+            if (!sender.isDestroyed()) {
+              sender.send('rpc-response', message);
+            }
+          });
+        }
       });
 
       ws.on('close', () => {

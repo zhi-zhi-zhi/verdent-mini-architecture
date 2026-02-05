@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsup src/main.ts src/preload.ts --format esm,cjs --external electron --external ws",
     "dev:local": "cross-env AGENT_MODE=local electron .",
-    "dev:remote": "cross-env AGENT_MODE=remote REMOTE_URL=ws://localhost:3001 electron .",
+    "dev:remote": "cross-env AGENT_MODE=remote REMOTE_URL=ws://localhost:3001/ws electron .",
     "clean": "rm -rf dist out"
   },
   "dependencies": {

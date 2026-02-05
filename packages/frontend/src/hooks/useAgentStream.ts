@@ -6,9 +6,21 @@ import { getRPCClient } from '../rpc/client.js';
 
 export type StreamStatus = 'idle' | 'connecting' | 'streaming' | 'done' | 'error' | 'cancelled';
 
+/**
+ * Options for agent execution
+ */
+export interface ExecuteOptions {
+  /** Whether to use real LLM (OpenAI) */
+  useRealLLM?: boolean;
+  /** Custom API key */
+  apiKey?: string;
+  /** Model to use */
+  model?: string;
+}
+
 export interface UseAgentStreamReturn {
   /** Execute with streaming */
-  execute: (prompt: string) => Promise<StreamExecuteResult | null>;
+  execute: (prompt: string, options?: ExecuteOptions) => Promise<StreamExecuteResult | null>;
   /** Cancel current stream */
   cancel: () => Promise<void>;
   /** Accumulated output chunks */
@@ -36,7 +48,7 @@ export function useAgentStream(): UseAgentStreamReturn {
   const [taskId, setTaskId] = useState<string | null>(null);
   const abortRef = useRef(false);
 
-  const execute = useCallback(async (prompt: string): Promise<StreamExecuteResult | null> => {
+  const execute = useCallback(async (prompt: string, options?: ExecuteOptions): Promise<StreamExecuteResult | null> => {
     setStatus('connecting');
     setChunks([]);
     setProgress(null);
@@ -50,12 +62,19 @@ export function useAgentStream(): UseAgentStreamReturn {
       const client = getRPCClient();
       const stream = client.callStream<StreamExecuteResult>(
         RPC_METHODS.AGENT_EXECUTE_STREAM,
-        { prompt, taskId: newTaskId }
+        { 
+          prompt, 
+          taskId: newTaskId,
+          useRealLLM: options?.useRealLLM,
+          apiKey: options?.apiKey,
+          model: options?.model,
+        }
       );
 
       setStatus('streaming');
 
       let result: StreamExecuteResult | undefined;
+      let hasError = false;
       
       for await (const event of stream) {
         if (abortRef.current) {
@@ -73,11 +92,15 @@ export function useAgentStream(): UseAgentStreamReturn {
           case 'error':
             setError(event.data.message);
             setStatus('error');
-            return null;
+            hasError = true;
+            break;
           case 'end':
             if (event.data.reason === 'cancelled') {
               setStatus('cancelled');
               return null;
+            }
+            if (event.data.reason === 'error') {
+              hasError = true;
             }
             break;
         }
@@ -86,6 +109,15 @@ export function useAgentStream(): UseAgentStreamReturn {
       // Get final result from generator
       const finalResult = await stream.next();
       result = finalResult.value as StreamExecuteResult;
+
+      // Check if there was an error during streaming or in final result
+      if (hasError || result?.status === 'error') {
+        if (!hasError && result?.error?.message) {
+          setError(result.error.message);
+        }
+        setStatus('error');
+        return result || null;
+      }
 
       setStatus('done');
       return result || null;

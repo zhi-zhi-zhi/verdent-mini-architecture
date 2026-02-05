@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { RPCClient, RPCServer, MemoryTransport, RPCClientError } from '@verdent-mini/rpc';
-import { RPC_METHODS, PERMISSIONS, ERROR_CODES } from '@verdent-mini/core';
+import { RPCClient, RPCServer, MemoryTransport } from '@verdent-mini/rpc';
+import { RPC_METHODS, PERMISSIONS } from '@verdent-mini/core';
 import {
   MockAgent,
   SimpleTokenProvider,
@@ -77,17 +77,14 @@ describe('Web Mode Integration', () => {
   });
 
   it('should support multiple concurrent requests', async () => {
-    const promises = [
+    const [executeResult, pingResult, statusResult] = await Promise.all([
       client.call<{ taskId: string }>(RPC_METHODS.AGENT_EXECUTE, { prompt: 'Request 1' }),
       client.call<{ mode: string }>(RPC_METHODS.SYSTEM_PING),
       client.call<{ running: boolean }>(RPC_METHODS.AGENT_GET_STATUS),
-    ];
+    ]);
 
-    const results = await Promise.all(promises);
-
-    expect(results).toHaveLength(3);
-    expect(results[0].taskId).toBeDefined();
-    expect(results[1].mode).toBe('web');
-    expect(results[2].running).toBeDefined();
+    expect(executeResult.taskId).toBeDefined();
+    expect(pingResult.mode).toBe('web');
+    expect(statusResult.running).toBeDefined();
   });
 });

@@ -27,6 +27,7 @@ export const STREAM_METHODS = {
   STREAM_CHUNK: 'agent/streamChunk',
   STREAM_PROGRESS: 'agent/streamProgress',
   STREAM_END: 'agent/streamEnd',
+  STREAM_ERROR: 'agent/streamError',
 } as const;
 
 export type StreamMethod = (typeof STREAM_METHODS)[keyof typeof STREAM_METHODS];

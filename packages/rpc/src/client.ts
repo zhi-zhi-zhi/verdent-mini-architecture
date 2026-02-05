@@ -75,7 +75,9 @@ export class RPCClient {
     method: string,
     params?: unknown
   ): AsyncGenerator<StreamEvent, TResult, undefined> {
-    const taskId = crypto.randomUUID();
+    // Use existing taskId from params, or generate new one
+    const paramsObj = (params as { taskId?: string } | undefined) || {};
+    const taskId = paramsObj.taskId || crypto.randomUUID();
     const paramsWithTaskId = { ...(params as object || {}), taskId };
 
     // Queue for incoming chunks
@@ -107,6 +109,14 @@ export class RPCClient {
       if (end.taskId === taskId) {
         streamEnded = true;
         resolveNext?.(true);
+      }
+    });
+
+    const unsubError = this.onNotification(STREAM_METHODS.STREAM_ERROR, (data) => {
+      const error = data as { taskId: string };
+      if (error.taskId === taskId) {
+        eventQueue.push({ type: 'error', data: data as StreamEvent['data'] } as StreamEvent);
+        resolveNext?.(false);
       }
     });
 
@@ -152,6 +162,7 @@ export class RPCClient {
       unsubChunk();
       unsubProgress();
       unsubEnd();
+      unsubError();
     }
   }
 

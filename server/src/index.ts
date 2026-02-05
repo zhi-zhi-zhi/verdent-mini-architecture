@@ -1,7 +1,8 @@
+import 'dotenv/config';
 import type { RunMode } from '@verdent-mini/core';
 import { RPCServer } from '@verdent-mini/rpc';
 import {
-  MockAgent,
+  HybridAgent,
   SimpleTokenProvider,
   createAuthMiddleware,
   registerHandlers,
@@ -14,11 +15,15 @@ const PORT = parseInt(process.env.PORT || '3001', 10);
 const MODE = (process.env.MODE || 'web') as RunMode;
 const REQUIRE_AUTH = process.env.REQUIRE_AUTH === 'true';
 const STATIC_DIR = process.env.STATIC_DIR || '../../packages/frontend/dist';
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const DEFAULT_USE_REAL_LLM = process.env.DEFAULT_USE_REAL_LLM === 'true';
 
 async function main() {
   console.log('Starting Verdent Mini Server...');
   console.log(`Mode: ${MODE}`);
   console.log(`Auth required: ${REQUIRE_AUTH}`);
+  console.log(`OpenAI API Key: ${OPENAI_API_KEY ? 'configured' : 'not configured'}`);
+  console.log(`Default use real LLM: ${DEFAULT_USE_REAL_LLM}`);
 
   // Create auth provider
   const authProvider = new SimpleTokenProvider();
@@ -34,8 +39,11 @@ async function main() {
     })
   );
 
-  // Create agent and register handlers
-  const agent = new MockAgent(MODE);
+  // Create hybrid agent (supports both mock and real LLM)
+  const agent = new HybridAgent(MODE, {
+    apiKey: OPENAI_API_KEY,
+    defaultUseRealLLM: DEFAULT_USE_REAL_LLM,
+  });
   registerHandlers(rpcServer, agent, MODE);
 
   // Create HTTP server

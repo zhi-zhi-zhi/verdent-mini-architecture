@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import type { RunMode } from '@verdent-mini/core';
 import { RPCServer } from '@verdent-mini/rpc';
 import {
-  MockAgent,
+  HybridAgent,
   SimpleTokenProvider,
   createAuthMiddleware,
   registerHandlers,
@@ -15,8 +15,15 @@ import {
 export function setupLocalMode(): { server: RPCServer; cleanup: () => void } {
   const mode: RunMode = 'local';
 
-  // Create agent and RPC server
-  const agent = new MockAgent(mode);
+  // Get configuration from environment
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+  const DEFAULT_USE_REAL_LLM = process.env.DEFAULT_USE_REAL_LLM === 'true';
+
+  // Create agent and RPC server - use HybridAgent to support both mock and real LLM
+  const agent = new HybridAgent(mode, {
+    apiKey: OPENAI_API_KEY,
+    defaultUseRealLLM: DEFAULT_USE_REAL_LLM,
+  });
   const server = new RPCServer();
 
   // Setup auth (not required in local mode)
@@ -56,6 +63,9 @@ export function setupLocalMode(): { server: RPCServer; cleanup: () => void } {
   ipcMain.on('rpc', handleRPCMessage);
 
   console.log('Local mode initialized');
+  console.log(`- Agent: HybridAgent`);
+  console.log(`- OpenAI API Key: ${OPENAI_API_KEY ? 'configured' : 'not configured'}`);
+  console.log(`- Default use real LLM: ${DEFAULT_USE_REAL_LLM}`);
 
   return {
     server,

@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Get mode from environment
 const mode = (process.env.AGENT_MODE || 'local') as RunMode;
-const remoteUrl = process.env.REMOTE_URL || 'ws://localhost:3001';
+const remoteUrl = process.env.REMOTE_URL || 'ws://localhost:3001/ws';
 
 let mainWindow: BrowserWindow | null = null;
 let cleanup: (() => void) | null = null;

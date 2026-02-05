@@ -29,12 +29,19 @@ export interface StreamEnd {
 }
 
 /**
+ * Stream error data (RPCError with taskId)
+ */
+export interface StreamError extends RPCError {
+  taskId: string;
+}
+
+/**
  * Stream event union type
  */
 export type StreamEvent =
   | { type: 'chunk'; data: StreamChunk }
   | { type: 'progress'; data: StreamProgress }
-  | { type: 'error'; data: RPCError }
+  | { type: 'error'; data: StreamError }
   | { type: 'end'; data: StreamEnd };
 
 /**

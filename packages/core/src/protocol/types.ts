@@ -10,6 +10,12 @@ export interface AgentExecuteParams {
   prompt: string;
   taskId?: string;
   context?: Record<string, unknown>;
+  /** Whether to use real LLM (OpenAI) instead of mock responses */
+  useRealLLM?: boolean;
+  /** Custom OpenAI API key (overrides environment variable) */
+  apiKey?: string;
+  /** Model to use (e.g., 'gpt-4o-mini', 'gpt-4') */
+  model?: string;
 }
 
 /**
