@@ -1,0 +1,313 @@
+:root {
+  /* Elegant Light Theme Palette */
+  --bg-page: #f9fafb;       /* Gray 50 */
+  --bg-card: #ffffff;       /* White */
+  --bg-input: #ffffff;      /* White */
+  --bg-secondary: #f3f4f6;  /* Gray 100 - for headers/secondary areas */
+  
+  --text-primary: #111827;  /* Gray 900 */
+  --text-secondary: #6b7280;/* Gray 500 */
+  --text-tertiary: #9ca3af; /* Gray 400 */
+  
+  --accent: #4f46e5;        /* Indigo 600 */
+  --accent-hover: #4338ca;  /* Indigo 700 */
+  --accent-subtle: #eef2ff; /* Indigo 50 */
+  
+  --success: #059669;       /* Emerald 600 */
+  --success-bg: #ecfdf5;    /* Emerald 50 */
+  --error: #dc2626;         /* Red 600 */
+  --error-bg: #fef2f2;      /* Red 50 */
+  --warning: #d97706;       /* Amber 600 */
+  
+  --border: #e5e7eb;        /* Gray 200 */
+  --border-focus: #4f46e5;  /* Indigo 600 */
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Main Card - Simple & Atmospheric */
+.agent-panel {
+  width: 100%;
+  max-width: 800px; /* Slightly wider for "大气" */
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.02); /* Very subtle border */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Header */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card); /* Keep it white for cleanliness */
+}
+
+.panel-header h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+}
+
+.connection-status .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+}
+
+.connection-status .dot.connected {
+  background: var(--success);
+  box-shadow: 0 0 0 2px var(--success-bg);
+}
+
+/* Form Area */
+.prompt-form {
+  padding: 2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.prompt-form textarea {
+  width: 100%;
+  padding: 1rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 100px;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.prompt-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+
+.prompt-form textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end; /* Align right for cleaner look */
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.form-actions button {
+  padding: 0.625rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Primary Button */
+.form-actions button[type="submit"] {
+  background: var(--text-primary); /* Black/Dark Gray for elegance */
+  color: white;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-actions button[type="submit"]:hover:not(:disabled) {
+  background: black;
+  transform: translateY(-1px);
+}
+
+.form-actions button[type="submit"]:disabled {
+  background: var(--text-tertiary);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Secondary/Cancel Button */
+.form-actions .cancel-btn {
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.form-actions .cancel-btn:hover:not(:disabled) {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--text-tertiary);
+}
+
+/* Output Area */
+.stream-output {
+  padding: 2rem;
+  background: var(--bg-page); /* Slightly different bg to separate content */
+  min-height: 200px;
+}
+
+/* Progress Bar */
+.progress-bar {
+  margin-bottom: 1.5rem;
+  background: white;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.progress-info .phase {
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+}
+
+.progress-info .message {
+  color: var(--text-secondary);
+}
+
+.progress-track {
+  height: 6px;
+  background: var(--bg-secondary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.875rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.status-badge.status-streaming { color: var(--accent); border-color: var(--accent-subtle); background: var(--accent-subtle); }
+.status-badge.status-done { color: var(--success); border-color: var(--success-bg); background: var(--success-bg); }
+.status-badge.status-error { color: var(--error); border-color: var(--error-bg); background: var(--error-bg); }
+.status-badge.status-cancelled { color: var(--warning); }
+.status-badge.status-idle { color: var(--text-secondary); }
+
+/* Error Message */
+.error-message {
+  padding: 1rem;
+  background: var(--error-bg);
+  border: 1px solid rgba(220, 38, 38, 0.1);
+  border-radius: var(--radius-md);
+  color: var(--error);
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Output Content */
+.output-content {
+  font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace; /* Keep monospace for output */
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  min-height: 150px;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: var(--shadow-sm);
+}
+
+.output-content:empty::before {
+  content: 'Output will appear here...';
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.2em;
+  background-color: var(--accent);
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

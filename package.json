@@ -1,0 +1,29 @@
+{
+  "name": "verdent-mini-architecture",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:local": "pnpm --filter @verdent-mini/electron dev:local",
+    "dev:remote": "concurrently \"pnpm dev:server\" \"sleep 2 && pnpm --filter @verdent-mini/electron dev:remote\"",
+    "dev:web": "concurrently \"pnpm dev:server\" \"pnpm --filter @verdent-mini/frontend dev\"",
+    "dev:server": "pnpm --filter server dev",
+    "build": "pnpm -r build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:integration": "vitest run --project integration",
+    "lint": "eslint packages --ext .ts,.tsx",
+    "clean": "pnpm -r clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0",
+    "tsup": "^8.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

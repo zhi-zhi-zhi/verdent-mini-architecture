@@ -1,0 +1,17 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@verdent-mini/backend": "workspace:*",
+    "@verdent-mini/core": "workspace:*",
+    "@verdent-mini/rpc": "workspace:*",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}

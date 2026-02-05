@@ -1,0 +1,25 @@
+{
+  "name": "@verdent-mini/electron",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/main.js",
+  "scripts": {
+    "build": "tsup src/main.ts src/preload.ts --format esm,cjs --external electron --external ws",
+    "dev:local": "cross-env AGENT_MODE=local electron .",
+    "dev:remote": "cross-env AGENT_MODE=remote REMOTE_URL=ws://localhost:3001 electron .",
+    "clean": "rm -rf dist out"
+  },
+  "dependencies": {
+    "@verdent-mini/backend": "workspace:*",
+    "@verdent-mini/core": "workspace:*",
+    "@verdent-mini/rpc": "workspace:*",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.10",
+    "cross-env": "^7.0.3",
+    "electron": "^28.1.3",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  }
+}
